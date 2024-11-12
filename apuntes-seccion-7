@@ -1,0 +1,184 @@
+select count(*),followers from users u where u.followers = 4 or u.followers = 4999 GROUP BY u.followers;
+ 
+select
+    count(*),
+    u.country
+from
+    users u
+GROUP by
+    u.country
+HAVING
+    count(*) > 5
+order by
+    count(*) DESC;
+    
+select
+    count(*),
+    SUBSTRING(u.email, POSITION('@' in u.email) + 1) as domains
+from
+    users u
+group by
+    SUBSTRING(u.email,POSITION('@' in u.email)+1)
+HAVING count(*) > 1;
+
+
+
+select * from country c where (continent = 'Asia') and 
+    (continent = 'South America') and
+    (continent = 'North America') and
+    (continent = 'Oceania') and
+    (continent = 'Antartica') and
+    (continent = 'Africa') and
+    (continent = 'Europe');
+alter table
+    country
+add
+    PRIMARY key (code);
+    
+    
+alter table country  add CHECK(
+surfacearea >= 0
+);
+alter table
+    country
+add
+    CHECK(
+    (continent = 'Asia') or 
+    (continent = 'South America') or
+    (continent = 'North America') or
+    (continent = 'Oceania') or
+    (continent = 'Antarctica') or
+    (continent = 'Africa') or
+    (continent = 'Europe') or 
+    (continent = 'Central America')
+    );
+
+
+ALTER TABLE country DROP CONSTRAINT "country_continent_check";
+
+
+select DISTINCT c.continent from country c;
+
+
+create UNIQUE INDEX "unique_country_name" on country (
+	name
+);
+
+create INDEX "unique_country_continent" on country (
+	continent
+);
+
+select *from city c where c.id = 2238;
+
+
+create UNIQUE index "unique_name_countrycode_district" on city (
+name,countrycode, district
+);
+
+
+create index "district_city" on city (
+ district
+);
+ALTER table
+    city
+add
+    CONSTRAINT fk_country_code FOREIGN key (countrycode)
+    REFERENCES country ( code );
+    
+    
+    INSERT INTO country
+		values('AFG', 'Afghanistan', 'Asia', 'Southern Asia', 652860, 1919, 40000000, 62, 69000000, NULL, 'Afghanistan', 'Totalitarian', NULL, NULL, 'AF');
+		
+		
+ALTER table
+    countrylanguage
+add
+    CONSTRAINT fk_country_code FOREIGN key (countrycode) REFERENCES country (code);
+    
+    DELETE from country where code = 'AFG';
+    
+    select * from country;
+    
+    
+    drop table country;
+    
+insert into
+    continent (name);
+select
+    DISTINCT c.continent
+from
+    country c
+ORDER by
+    c.continent ASC;
+select
+    c.name,
+    c.continent,
+    (
+        select
+            c2.code
+        from
+            continent c2
+        WHERE
+            c2.name = c.continent
+    )
+from
+    country c;
+    
+    update country c set continent = (
+        select
+            c2.code
+        from
+            continent c2
+        WHERE
+            c2.name = c.continent
+    );
+    select *from country;
+    
+    
+    SELECT *from continent;
+    
+    
+    ALTER TABLE continent ADD CONSTRAINT unique_code UNIQUE(code);
+    
+ALTER table
+    country
+add
+    CONSTRAINT fk_continent_code FOREIGN key (continent) REFERENCES continent (code);
+    
+-- UNIONES
+select *from continent where name like'%America%'
+
+union
+
+select *from continent where code in (3,5)
+
+order by name asc;
+
+select
+    a.name as country,
+    b."name" as continent
+from
+    country a,
+    continent b
+where
+    a.continent = b.code;
+    
+    select
+    a.name as country,
+    b."name" as continent
+from
+    country a
+inner join continent b on
+    a.continent = b.code;
+
+-- ALterar la secuencia, reiniciar, inicia en el número que se agrega despues del with
+alter SEQUENCE name 'seq_name' restart with 9;
+
+
+select a.name, a.continent, b."name" as "continentName" from country a RIGHT join continent b on a.continent = b.code WHERE a.continent is NULL;
+
+select count(*),b."name" continent from country a inner join continent b on a.continent = b.code GROUP by b."name" order by count(*) DESC;
+
+
+
+
